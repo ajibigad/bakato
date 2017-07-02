@@ -43,11 +43,8 @@ import static org.hamcrest.core.StringContains.containsString;
 @RunWith(AndroidJUnit4.class)
 public class RecipeActivityTest {
 
-    public static final String FIRST_STEP_NAME = "Recipe Introduction";
-    private static final String NEXT_RECIPE_NAME = "Brownies";
-
-    static List<Step> steps;
-    static List<Recipe> recipes;
+    private static List<Step> steps;
+    private static List<Recipe> recipes;
 
     @Rule
     public ActivityTestRule<RecipeActivity> mActivityTestRule = new ActivityTestRule<>(RecipeActivity.class, false, false);

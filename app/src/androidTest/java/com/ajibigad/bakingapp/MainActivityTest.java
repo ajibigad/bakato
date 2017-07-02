@@ -38,8 +38,7 @@ import static org.hamcrest.Matchers.anything;
 @RunWith(AndroidJUnit4.class)
 public class MainActivityTest {
 
-//    public static final String FIRST_RECIPE_NAME = "Nutella Pie";
-    static List<Recipe> recipes;
+    private static List<Recipe> recipes;
 
     @Rule
     public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);

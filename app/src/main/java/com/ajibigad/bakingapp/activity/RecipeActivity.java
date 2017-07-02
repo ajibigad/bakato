@@ -10,13 +10,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.ajibigad.bakingapp.fragment.IngredientFragment;
 import com.ajibigad.bakingapp.R;
-import com.ajibigad.bakingapp.fragment.StepFragment;
-import com.ajibigad.bakingapp.fragment.StepsFragment;
 import com.ajibigad.bakingapp.adapter.OnListFragmentInteractionListener;
 import com.ajibigad.bakingapp.data.Recipe;
 import com.ajibigad.bakingapp.data.Step;
+import com.ajibigad.bakingapp.fragment.IngredientFragment;
+import com.ajibigad.bakingapp.fragment.StepFragment;
+import com.ajibigad.bakingapp.fragment.StepsFragment;
 
 import org.parceler.Parcels;
 

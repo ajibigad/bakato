@@ -9,9 +9,9 @@ import android.content.Intent;
 import android.util.Log;
 import android.widget.RemoteViews;
 
-import com.ajibigad.bakingapp.fragment.IngredientFragment;
 import com.ajibigad.bakingapp.R;
 import com.ajibigad.bakingapp.data.Recipe;
+import com.ajibigad.bakingapp.fragment.IngredientFragment;
 import com.ajibigad.bakingapp.utils.AppConstants;
 
 import org.parceler.Parcels;

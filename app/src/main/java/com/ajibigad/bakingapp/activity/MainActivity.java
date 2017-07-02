@@ -7,9 +7,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
 import com.ajibigad.bakingapp.R;
-import com.ajibigad.bakingapp.fragment.RecipesFragment;
 import com.ajibigad.bakingapp.adapter.OnListFragmentInteractionListener;
 import com.ajibigad.bakingapp.data.Recipe;
+import com.ajibigad.bakingapp.fragment.RecipesFragment;
 
 import org.parceler.Parcels;
 
