@@ -6,7 +6,12 @@ import com.ajibigad.bakingapp.R;
  * Created by ajibigad on 17/06/2017.
  */
 
-public class RecipeImageHelper {
+public final class RecipeImageHelper {
+
+    // Suppress default constructor for noninstantiability
+    private RecipeImageHelper() {
+        throw new AssertionError();
+    }
 
     public static int getRecipeImage(String recipeName){
         switch (recipeName){

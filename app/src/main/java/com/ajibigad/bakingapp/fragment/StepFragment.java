@@ -1,4 +1,4 @@
-package com.ajibigad.bakingapp;
+package com.ajibigad.bakingapp.fragment;
 
 
 import android.content.BroadcastReceiver;
@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.ajibigad.bakingapp.R;
 import com.ajibigad.bakingapp.data.Step;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlaybackException;
@@ -62,6 +63,8 @@ public class StepFragment extends Fragment implements ExoPlayer.EventListener{
     private static MediaSessionCompat mMediaSession;
     private PlaybackStateCompat.Builder mStateBuilder;
 
+    private Step selectedStep;
+
     public StepFragment() {
         // Required empty public constructor
     }
@@ -73,7 +76,6 @@ public class StepFragment extends Fragment implements ExoPlayer.EventListener{
         View view = inflater.inflate(R.layout.fragment_step, container, false);
         ButterKnife.bind(this, view);
 
-        Step selectedStep;
         if(this.getArguments().containsKey(SELECTED_STEP)){
             selectedStep = Parcels.unwrap(this.getArguments().getParcelable(SELECTED_STEP));
             // Initialize the player.
@@ -157,12 +159,22 @@ public class StepFragment extends Fragment implements ExoPlayer.EventListener{
     }
 
     @Override
-    public void onDetach() {
-        super.onDetach();
+    public void onStart() {
+        super.onStart();
+        if(mExoPlayer == null){
+            // Initialize the player.
+            // Initialize the Media Session.
+            initializeMediaSession();
+            initializePlayer(Uri.parse(selectedStep.getVideoURL()));
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
         releasePlayer();
         mMediaSession.setActive(false);
     }
-
 
     // ExoPlayer Event Listeners
 

@@ -6,7 +6,7 @@
     android:name="com.ajibigad.bakingapp.RecipeFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.ajibigad.bakingapp.RecipesFragment">
+    tools:context=".fragment.RecipesFragment">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recipe_list"

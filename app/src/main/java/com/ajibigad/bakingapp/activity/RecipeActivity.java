@@ -1,7 +1,6 @@
-package com.ajibigad.bakingapp;
+package com.ajibigad.bakingapp.activity;
 
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.FragmentManager;
@@ -11,6 +10,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.ajibigad.bakingapp.fragment.IngredientFragment;
+import com.ajibigad.bakingapp.R;
+import com.ajibigad.bakingapp.fragment.StepFragment;
+import com.ajibigad.bakingapp.fragment.StepsFragment;
 import com.ajibigad.bakingapp.adapter.OnListFragmentInteractionListener;
 import com.ajibigad.bakingapp.data.Recipe;
 import com.ajibigad.bakingapp.data.Step;
@@ -19,12 +22,15 @@ import org.parceler.Parcels;
 
 import java.util.List;
 
-import static com.ajibigad.bakingapp.StepFragment.SELECTED_STEP;
+import static com.ajibigad.bakingapp.fragment.StepFragment.SELECTED_STEP;
 import static com.ajibigad.bakingapp.utils.AppConstants.FETCHED_RECIPES;
 import static com.ajibigad.bakingapp.utils.AppConstants.SELECTED_RECIPE;
 
 public class RecipeActivity extends AppCompatActivity implements OnListFragmentInteractionListener<Step>{
 
+    private static final String SELECTED_STEP_INDEX = "selected_step_index";
+    private static final String IS_SHOWING_STEP = "is_showing_step";
+    private static final String SELECTED_RECIPE_INDEX = "selected_recipe_index";
     private Recipe selectedRecipe;
 
     private FragmentManager fragmentManager;
@@ -43,68 +49,101 @@ public class RecipeActivity extends AppCompatActivity implements OnListFragmentI
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe);
 
+        Step selectedStep = null;
+        fragmentManager = getSupportFragmentManager();
+
         BottomNavigationView bottomNavigationView = (BottomNavigationView)
                 findViewById(R.id.bottom_navigation);
+
+        bottomNavigationView.setOnNavigationItemSelectedListener(
+                new BottomNavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                        switch (item.getItemId()) {
+                            case R.id.action_previous:
+                                if(isShowingStep){
+                                    Step selectedStep = getPreviousStep();
+                                    displayStepView(selectedStep);
+                                } else {
+                                    selectedRecipe = getPreviousRecipe();
+                                    changeRecipeDisplayed();
+                                }
+                                break;
+
+                            case R.id.action_next:
+                                if(isShowingStep){
+                                    Step selectedStep = getNextStep();
+                                    displayStepView(selectedStep);
+                                } else {
+                                    selectedRecipe = getNextRecipe();
+                                    changeRecipeDisplayed();
+                                }
+                                break;
+
+                        }
+                        handleNavigationButtonsState();
+                        return true;
+                    }
+                });
+        previousButton = bottomNavigationView.getMenu().getItem(0);
+        nextButton = bottomNavigationView.getMenu().getItem(1);
 
         isTableLayout = findViewById(R.id.recipe_tablet_layout) != null;
 
         if(getIntent().hasExtra(SELECTED_RECIPE) && getIntent().hasExtra(FETCHED_RECIPES)){
-            selectedRecipe = Parcels.unwrap(getIntent().getParcelableExtra(SELECTED_RECIPE));
-            recipes = Parcels.unwrap(getIntent().getParcelableExtra(FETCHED_RECIPES));
-
-            getSupportActionBar().setTitle(selectedRecipe.getName());
-            setSelectedRecipeIndex();
 
             IngredientFragment ingredientFragment = new IngredientFragment();
-            ingredientFragment.setArguments(getIntent().getExtras());
-
             StepsFragment stepsFragment = new StepsFragment();
-            stepsFragment.setArguments(getIntent().getExtras());
+            recipes = Parcels.unwrap(getIntent().getParcelableExtra(FETCHED_RECIPES));
 
-            fragmentManager = getSupportFragmentManager();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction().add(R.id.ingredient_container, ingredientFragment)
-                    .add(R.id.steps_container, stepsFragment);
-            if(isTableLayout){
-                fragmentTransaction.add(R.id.step_container, generateStepFragment(selectedRecipe.getSteps().get(0)));
+            if(savedInstanceState != null){
+
+                //selected recipe, isShowingStep, selectedStepIndex
+                selectedRecipe = Parcels.unwrap(savedInstanceState.getParcelable(SELECTED_RECIPE));
+                isShowingStep = savedInstanceState.getBoolean(IS_SHOWING_STEP);
+                selectedStepIndex = savedInstanceState.getInt(SELECTED_STEP_INDEX);
+                selectedStep = selectedRecipe.getSteps().get(selectedStepIndex);
+
+                ingredientFragment.setArguments(savedInstanceState);
+                stepsFragment.setArguments(savedInstanceState);
+
+            } else{
+                selectedRecipe = Parcels.unwrap(getIntent().getParcelableExtra(SELECTED_RECIPE));
+                ingredientFragment.setArguments(getIntent().getExtras());
+                stepsFragment.setArguments(getIntent().getExtras());
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction().add(R.id.ingredient_container, ingredientFragment)
+                        .add(R.id.steps_container, stepsFragment);
+                if(isTableLayout){
+                    fragmentTransaction.add(R.id.step_container, generateStepFragment(selectedRecipe.getSteps().get(0)));
+                }
+                fragmentTransaction.commit();
             }
-            fragmentTransaction.commit();
 
+            setSelectedRecipeIndex();
 
-            bottomNavigationView.setOnNavigationItemSelectedListener(
-                    new BottomNavigationView.OnNavigationItemSelectedListener() {
-                        @Override
-                        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                            switch (item.getItemId()) {
-                                case R.id.action_previous:
-                                    if(isShowingStep){
-                                        Step selectedStep = getPreviousStep();
-                                        displayStepView(selectedStep);
-                                    } else {
-                                        selectedRecipe = getPreviousRecipe();
-                                        changeRecipeDisplayed();
-                                    }
-                                    break;
+            getSupportActionBar().setTitle(selectedRecipe.getName());
 
-                                case R.id.action_next:
-                                    if(isShowingStep){
-                                        Step selectedStep = getNextStep();
-                                        displayStepView(selectedStep);
-                                    } else {
-                                        selectedRecipe = getNextRecipe();
-                                        changeRecipeDisplayed();
-                                    }
-                                    break;
-
-                            }
-                            handleNavigationButtonsState();
-                            return true;
-                        }
-                    });
-            previousButton = bottomNavigationView.getMenu().getItem(0);
-            nextButton = bottomNavigationView.getMenu().getItem(1);
+            if(isShowingStep && selectedStep != null){
+                displayStepView(selectedStep);
+            }
             handleNavigationButtonsState();
         }
         else finish();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelable(SELECTED_RECIPE, Parcels.wrap(selectedRecipe));
+        outState.putInt(SELECTED_STEP_INDEX, selectedStepIndex);
+        outState.putInt(SELECTED_RECIPE_INDEX, selectedRecipeIndex);
+        outState.putBoolean(IS_SHOWING_STEP, isShowingStep);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        fragmentManager = null;
     }
 
     @Override
@@ -160,7 +199,7 @@ public class RecipeActivity extends AppCompatActivity implements OnListFragmentI
         StepsFragment stepsFragment = new StepsFragment();
         stepsFragment.setArguments(recipeBundle);
 
-        fragmentManager = getSupportFragmentManager();
+//        fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction().replace(R.id.ingredient_container, ingredientFragment)
                 .replace(R.id.steps_container, stepsFragment);
         if(isTableLayout){
@@ -191,13 +230,14 @@ public class RecipeActivity extends AppCompatActivity implements OnListFragmentI
             handleNavigationButtonsState();
             return;
         }
-        else if(isShowingStep){
-            fragmentManager.beginTransaction().replace(R.id.step_container, generateStepFragment(selectedStep)).commit();
+
+        FragmentTransaction transaction = fragmentManager.beginTransaction().hide(fragmentManager.findFragmentById(R.id.ingredient_container))
+                .hide(fragmentManager.findFragmentById(R.id.steps_container));
+        if(isShowingStep){
+            transaction.replace(R.id.step_container, generateStepFragment(selectedStep)).commit();
         }
         else{
-            fragmentManager.beginTransaction().hide(fragmentManager.findFragmentById(R.id.ingredient_container))
-                    .hide(fragmentManager.findFragmentById(R.id.steps_container))
-                    .add(R.id.step_container, generateStepFragment(selectedStep)).commit();
+            transaction.add(R.id.step_container, generateStepFragment(selectedStep)).commit();
         }
         isShowingStep = true;
         handleNavigationButtonsState();

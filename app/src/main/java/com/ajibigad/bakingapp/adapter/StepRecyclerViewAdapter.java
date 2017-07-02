@@ -1,14 +1,17 @@
 package com.ajibigad.bakingapp.adapter;
 
 import android.content.Context;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ajibigad.bakingapp.R;
 import com.ajibigad.bakingapp.data.Step;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +47,12 @@ public class StepRecyclerViewAdapter extends RecyclerView.Adapter<StepRecyclerVi
         final Step selectedStep = steps.get(position);
         String formattedShortDescription = String.format("%d. %s", position + 1, selectedStep.getShortDescription());
         holder.tvShortDescription.setText(formattedShortDescription);
+        if(selectedStep.getThumbnailURL().isEmpty()){
+            Picasso.with(context)
+                    .load(selectedStep.getThumbnailURL().isEmpty() ? null : selectedStep.getThumbnailURL())
+                    .placeholder(R.drawable.step_default_thumbnail)
+                    .into(holder.thumbnail);
+        }
 
         holder.view.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,6 +81,9 @@ public class StepRecyclerViewAdapter extends RecyclerView.Adapter<StepRecyclerVi
 
         @BindView(R.id.tv_short_description)
         public TextView tvShortDescription;
+
+        @BindView(R.id.step_thumbnail)
+        public ImageView thumbnail;
 
         public ViewHolder(View view) {
             super(view);

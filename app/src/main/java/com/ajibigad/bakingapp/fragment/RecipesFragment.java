@@ -1,4 +1,4 @@
-package com.ajibigad.bakingapp;
+package com.ajibigad.bakingapp.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.ajibigad.bakingapp.R;
 import com.ajibigad.bakingapp.adapter.OnListFragmentInteractionListener;
 import com.ajibigad.bakingapp.adapter.RecipeRecyclerViewAdapter;
 import com.ajibigad.bakingapp.data.Recipe;
@@ -27,7 +28,6 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import retrofit2.Response;
-import retrofit2.http.PUT;
 
 /**
  * A fragment representing a list of Items.
@@ -40,7 +40,7 @@ public class RecipesFragment extends Fragment implements LoaderManager.LoaderCal
     private static final int RECIPES_LOADER = 1111;
     private final String TAG = RecipesFragment.class.getSimpleName();
 
-    RecipeService recipeService;
+    private RecipeService recipeService;
 
     @BindView(R.id.recipe_list)
     RecyclerView recipeRecyclerView;

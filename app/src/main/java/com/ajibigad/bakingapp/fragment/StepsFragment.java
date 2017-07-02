@@ -1,4 +1,4 @@
-package com.ajibigad.bakingapp;
+package com.ajibigad.bakingapp.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.ajibigad.bakingapp.R;
 import com.ajibigad.bakingapp.adapter.OnListFragmentInteractionListener;
 import com.ajibigad.bakingapp.adapter.StepRecyclerViewAdapter;
 import com.ajibigad.bakingapp.data.Recipe;

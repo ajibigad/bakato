@@ -6,7 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    tools:context="com.ajibigad.bakingapp.RecipeActivity">
+    tools:context=".activity.RecipeActivity">
 
     <ScrollView
         android:layout_width="match_parent"
